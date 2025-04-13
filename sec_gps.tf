@@ -1,4 +1,5 @@
-
+# ---------------
+# Security Group Definitions
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
 
@@ -26,5 +27,75 @@ resource "aws_security_group" "bastion_sg" {
 
   tags = {
     Name = "assign2-bastion-sg"
+  }
+}
+
+# Web Server SG - allow HTTP from anywhere and SSH from Bastion
+resource "aws_security_group" "web_sg" {
+  name        = "assign2-web-sg"
+  description = "Allow HTTP from internet, SSH from Bastion"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  ingress {
+    description = "HTTP from internet"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description     = "SSH from Bastion Host"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "assign2-web-sg"
+  }
+}
+
+# DB SG - 
+resource "aws_security_group" "db_sg" {
+  name        = "assign2-db-sg"
+  description = "Allow MySQL from web server subnet only"
+  vpc_id      = aws_vpc.main_vpc.id
+
+    # to close these ports when we decide backend db 
+  ingress {
+    description     = "Access from Web SG"
+    from_port = 0
+    to_port   = 65535
+    protocol        = "tcp"
+    security_groups = [aws_security_group.web_sg.id]
+  }
+
+  
+  ingress {
+    description     = "SSH from Bastion Host"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "assign2-db-sg"
   }
 }
