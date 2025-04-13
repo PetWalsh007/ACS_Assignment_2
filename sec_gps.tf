@@ -67,7 +67,7 @@ resource "aws_security_group" "web_sg" {
 # DB SG - 
 resource "aws_security_group" "db_sg" {
   name        = "assign2-db-sg"
-  description = "Allow MySQL from web server subnet only"
+  description = "Allow DB Traffic from Webservers"
   vpc_id      = aws_vpc.main_vpc.id
 
     # to close these ports when we decide backend db 
