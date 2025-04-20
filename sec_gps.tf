@@ -41,16 +41,10 @@ resource "aws_security_group" "web_sg" {
     from_port   = 8050
     to_port     = 8050
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb_sg.id] 
   }
 
-    ingress {
-    description = "HTTP from internet"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
 
   ingress {
     description     = "SSH from Bastion Host"
@@ -106,5 +100,33 @@ resource "aws_security_group" "db_sg" {
 
   tags = {
     Name = "assign2-db-sg"
+  }
+}
+
+
+
+
+resource "aws_security_group" "alb_sg" {
+  name        = "assign2-alb-sg"
+  description = "Allow HTTP from Internet to ALB"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  ingress {
+    description = "Allow HTTP from Internet"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Open to internet
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "assign2-alb-sg"
   }
 }

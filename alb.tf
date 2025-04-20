@@ -10,7 +10,7 @@ resource "aws_lb" "web_alb" {
     aws_subnet.webserver_subnet_az1.id,
     aws_subnet.webserver_subnet_az2.id
   ]
-  security_groups    = [aws_security_group.web_sg.id]
+  security_groups    = [aws_security_group.alb_sg.id]
 
   tags = {
     Name = "assign2-web-alb"
