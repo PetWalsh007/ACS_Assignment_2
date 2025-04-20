@@ -61,5 +61,6 @@ def get_users():
         conn.close()
 
 # specify port 5000 - what we have open in security group
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8050, debug=False, use_reloader=False)
+
