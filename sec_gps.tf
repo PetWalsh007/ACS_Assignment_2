@@ -37,6 +37,14 @@ resource "aws_security_group" "web_sg" {
   vpc_id      = aws_vpc.main_vpc.id
 
   ingress {
+    description = "HTTP from internet to app"
+    from_port   = 8050
+    to_port     = 8050
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+    ingress {
     description = "HTTP from internet"
     from_port   = 80
     to_port     = 80
@@ -72,12 +80,13 @@ resource "aws_security_group" "db_sg" {
 
     # to close these ports when we decide backend db 
   ingress {
-    description     = "Access from Web SG"
-    from_port = 0
-    to_port   = 65535
+    description     = "Allow API traffic from Web SG"
+    from_port       = 5000
+    to_port         = 5000
     protocol        = "tcp"
     security_groups = [aws_security_group.web_sg.id]
   }
+
 
   
   ingress {

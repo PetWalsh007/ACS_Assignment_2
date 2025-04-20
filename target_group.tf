@@ -5,7 +5,7 @@
 
 resource "aws_lb_target_group" "web_tg" {
   name     = "assign2-web-tg"
-  port     = 80
+  port     = 8050
   protocol = "HTTP"
   vpc_id   = aws_vpc.main_vpc.id
 

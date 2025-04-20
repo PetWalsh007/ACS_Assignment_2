@@ -14,7 +14,7 @@ import dash
 from dash import dcc, dash_table
 from dash import html
 from dash.dependencies import Input, Output, State
-import sqlite3
+import requests
 
 try:
     app = dash.Dash(__name__)
@@ -23,7 +23,7 @@ except Exception as e:
     
 
 
-DB_FILE = '/home/ec2-user/pw-assign2.txt'
+DB_FILE = '/home/ec2-user/endpoint.txt'
 
 
 #read the db file 
@@ -31,24 +31,12 @@ DB_FILE = '/home/ec2-user/pw-assign2.txt'
 def read_db():
     try:
         with open(DB_FILE, 'r') as file:
-            return file.read().strip()
+            return file.read().strip() # this will read the file and remove any leading/trailing whitespace
     except:
         return None
 
 
 
-# Connect to the SQLite database
-def connect_db():
-    con_str = read_db()
-    if con_str is None:
-        print("Database connection string is empty.")
-        return None
-    try:
-        conn = sqlite3.connect(con_str)
-        return conn
-    except sqlite3.Error as e:
-        print(f"Error connecting to database: {e}")
-        return None
     
 
 def main_page_layout():
@@ -85,19 +73,23 @@ def update_output(n_clicks, name, email, comment):
     if not name or not email:
         return "Please enter both name and email."
     
-    conn = connect_db()
-    if conn is None:
-        return "Database connection failed."
-
+    api_endpoint = read_db()
+    if api_endpoint is None:
+        return "Database connection string is empty."
     try:
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (name, email, comment) VALUES (?, ?, ?)", (name, email, comment))
-        conn.commit()
-        return f"Data submitted: {name}, {email}, {comment}"
-    except sqlite3.Error as e:
-        return f"Error inserting data: {e}"
-    finally:
-        conn.close()
+        response = requests.post(api_endpoint + '/insert_user', json={
+            'name': name,
+            'email': email,
+            'comment': comment
+        })
+        if response.status_code == 200:
+            return "User inserted successfully."
+        else:
+            return f"Error inserting user: {response.json().get('error', 'Unknown error')}"
+    except requests.RequestException as e:
+        return f"Error connecting to API: {e}"
+
+
 
 # Callback to handle data retrieval
 @app.callback(
@@ -107,23 +99,20 @@ def update_output(n_clicks, name, email, comment):
 def get_data(n_clicks):
     if n_clicks is None:
         return []
-    
-    conn = connect_db()
-    if conn is None:
+    api_endpoint = read_db()
+    if api_endpoint is None:
+        return "Database connection string is empty."
+    try:
+        response = requests.get(api_endpoint + '/get_users')
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return []
+
+    except requests.RequestException as e:
         return []
 
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users")
-        rows = cursor.fetchall()
-        columns = [description[0] for description in cursor.description]
-        data = [dict(zip(columns, row)) for row in rows]
-        return data
-    except sqlite3.Error as e:
-        print(f"Error retrieving data: {e}")
-        return []
-    finally:
-        conn.close()
+    
 
 
 # Run the app
