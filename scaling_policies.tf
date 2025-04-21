@@ -53,3 +53,19 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
 
   alarm_actions = [aws_autoscaling_policy.scale_in.arn]
 }
+
+
+resource "aws_cloudwatch_metric_alarm" "db-disk_usage_high" {
+  alarm_name          = "assign2-db-rootdisk-usage-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name        = "Database-1-DiskUsagePercent"
+  namespace           = "Assign2CustomMetrics-PW"
+  period              = 60
+  statistic            = "Average"
+  threshold           = 80
+  alarm_description   = "Alarm when Root Disk usage exceeds 80%"
+  treat_missing_data  = "notBreaching"
+
+  dimensions = { InstanceId = aws_instance.db_server_priv.id }
+}
