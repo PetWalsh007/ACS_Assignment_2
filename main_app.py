@@ -36,11 +36,19 @@ def read_db():
         return None
 
 
+INSTANCE_DATA_FILE = '/home/ec2-user/assign2-app/instance_data.txt'
 
+def read_instance_data():
+    try:
+        with open(INSTANCE_DATA_FILE, 'r') as file:
+            return file.read().strip()
+    except:
+        return "NULL"
     
 
 def main_page_layout():
     return html.Div([
+        html.H2(read_instance_data(), style={'textAlign': 'center', 'color': 'green'}),  # <<< NEW LINE
         html.H1("User Comments", style={'textAlign': 'center', 'color': 'blue'}),
         html.Div([
             dcc.Input(id='name', type='text', placeholder='Name', style={'margin': '5px'}),
@@ -118,4 +126,4 @@ def get_data(n_clicks):
 # Run the app
 if __name__ == '__main__':
  
-    app.run(host='0.0.0.0', debug=False) 
+    app.run(host='0.0.0.0',debug=True) 

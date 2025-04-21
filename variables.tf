@@ -9,13 +9,10 @@ variable "user_data" {
   default = <<EOT
 #!/bin/bash
 yum update -y
-yum install -y httpd
-systemctl enable httpd
-systemctl start httpd
-
-echo "<b>Instance ID:</b> " > /var/www/html/id.html
-TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
-curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/id.html
+echo "Instance ID:" > /home/ec2-user/assign2-app/instance_data.txt
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id >> /home/ec2-user/assign2-app/instance_data.txt
+systemctl restart assign2-dashapp
 EOT
 }
 
