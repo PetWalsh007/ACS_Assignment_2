@@ -8,6 +8,8 @@ resource "aws_launch_template" "web_side_lt" {
   key_name      = var.keypair
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
+   monitoring { enabled = true }
+
   user_data = base64encode(var.user_data)
 
   tag_specifications {
