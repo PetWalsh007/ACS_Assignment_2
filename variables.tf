@@ -12,6 +12,7 @@ yum update -y
 echo "Instance ID:" > /home/ec2-user/assign2-app/instance_data.txt
 TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id >> /home/ec2-user/assign2-app/instance_data.txt
+echo "http://10.0.2.84:5000" > /home/ec2-user/assign2-app/endpoint.txt
 systemctl restart assign2-dashapp
 EOT
 }
