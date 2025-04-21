@@ -50,7 +50,7 @@ resource "aws_instance" "db_server_priv" {
   key_name                    = var.keypair
 
   iam_instance_profile = "LabInstanceProfile"
-
+   monitoring          = true  
   tags = {
     Name = "assign2-db-server"
   }
