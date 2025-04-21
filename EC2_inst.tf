@@ -38,3 +38,19 @@ resource "aws_instance" "bastion" {
     Name = "assign2-bastion"
   }
 }
+
+
+resource "aws_instance" "db_server_priv" {
+  ami                         = "ami-07a06a33d377b5ffe" 
+  instance_type               = "t2.nano"
+  subnet_id                   = aws_subnet.db_subnet_az1.id
+  private_ip                  = "10.0.2.84"
+  vpc_security_group_ids      = [aws_security_group.db_sg.id]
+  associate_public_ip_address = false
+  key_name                    = var.keypair
+
+  tags = {
+    Name = "assign2-db-server"
+  }
+}
+
