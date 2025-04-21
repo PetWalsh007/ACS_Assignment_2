@@ -41,7 +41,7 @@ resource "aws_instance" "bastion" {
 
 
 resource "aws_instance" "db_server_priv" {
-  ami                        = "ami-0fdd3c3ea299bedf9" 
+  ami                        = "ami-0b5eb7c9d73faf5eb" 
   instance_type          = "t2.nano"
   subnet_id              = aws_subnet.db_subnet_az1.id
   private_ip             = "10.0.2.84"
