@@ -23,7 +23,7 @@ except Exception as e:
     
 
 
-DB_FILE = '/home/ec2-user/endpoint.txt'
+DB_FILE = '/home/ec2-user/assign2-app/endpoint.txt'
 
 
 #read the db file 
