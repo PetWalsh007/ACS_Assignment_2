@@ -30,14 +30,14 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
-# Web Server SG - allow HTTP from anywhere and SSH from Bastion
+# Web Server SG - allow HTTP from LB and SSH from Bastion
 resource "aws_security_group" "web_sg" {
   name        = "assign2-web-sg"
-  description = "Allow HTTP from internet, SSH from Bastion"
+  description = "Allow HTTP from LB, SSH from Bastion"
   vpc_id      = aws_vpc.main_vpc.id
 
   ingress {
-    description = "HTTP from internet to app"
+    description = "HTTP from LB to app"
     from_port   = 8050
     to_port     = 8050
     protocol    = "tcp"
