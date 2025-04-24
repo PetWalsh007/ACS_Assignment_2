@@ -1,15 +1,5 @@
 # main app file
 
-"""
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  comment TEXT
-);
-
-"""
-
 import dash
 from dash import dcc, dash_table
 from dash import html
@@ -21,8 +11,6 @@ try:
 except Exception as e:
     print(f"Error initializing Dash app: {e}")
     
-
-
 DB_FILE = '/home/ec2-user/assign2-app/endpoint.txt'
 
 
@@ -39,6 +27,7 @@ def read_db():
 INSTANCE_DATA_FILE = '/home/ec2-user/assign2-app/instance_data.txt'
 
 def read_instance_data():
+    # Read the instance data from a file
     try:
         with open(INSTANCE_DATA_FILE, 'r') as file:
             return file.read().strip()
@@ -47,6 +36,7 @@ def read_instance_data():
     
 
 def main_page_layout():
+    # Main layout of the app
     return html.Div([
         html.H2(read_instance_data(), style={'textAlign': 'center', 'color': 'green'}),  # <<< NEW LINE
         html.H1("User Comments", style={'textAlign': 'center', 'color': 'blue'}),
