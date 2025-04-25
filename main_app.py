@@ -5,6 +5,8 @@ from dash import dcc, dash_table
 from dash import html
 from dash.dependencies import Input, Output, State
 import requests
+from flask import request
+import logging
 
 try:
     app = dash.Dash(__name__)
@@ -15,6 +17,15 @@ DB_FILE = '/home/ec2-user/assign2-app/endpoint.txt'
 
 
 #read the db file 
+
+
+# Setup logging to file
+logging.basicConfig(filename='dash_requests.log', level=logging.INFO)
+
+@app.server.before_request
+def log_request_info():
+    logging.info(f"{request.remote_addr} - {request.method} {request.path}")
+
 
 def read_db():
     try:
